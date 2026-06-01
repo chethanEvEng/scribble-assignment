@@ -40,7 +40,12 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Ensure compliance with [Scribble Assignment Constitution](.specify/memory/constitution.md):
+1. **TypeScript**: Strict mode enabled (Principle I).
+2. **Stack**: Frontend (React 18/Vite), Backend (Node/Express/Zod/HTTP Polling). No WebSockets, DBs, Auth (Principle II).
+3. **Architecture**: Clean separation (api/services/models/state), functional components, immutable structures (Principle III).
+4. **Minimalism**: Minimal memory footprint, no extra features, no unjustified dependencies (Principle IV).
+5. **Scope**: Strictly adhere to defined features. No unrelated refactors (Principle V).
 
 ## Project Structure
 
