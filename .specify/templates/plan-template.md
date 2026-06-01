@@ -46,6 +46,7 @@ Ensure compliance with [Scribble Assignment Constitution](.specify/memory/consti
 3. **Architecture**: Clean separation (api/services/models/state), functional components, immutable structures (Principle III).
 4. **Minimalism**: Minimal memory footprint, no extra features, no unjustified dependencies (Principle IV).
 5. **Scope**: Strictly adhere to defined features. No unrelated refactors (Principle V).
+6. **Testing**: Vitest for all tests, minimum 90% code coverage, and mandatory automated verification before merge (Principle VI).
 
 ## Project Structure
 

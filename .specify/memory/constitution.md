@@ -1,9 +1,9 @@
 <!-- 
 Sync Impact Report:
-- Version change: N/A -> 0.1.0
-- Modified principles: N/A (Initial constitution)
-- Added sections: Core Principles, Technical Stack & Architectural Constraints, Workflow Standards, Governance
-- Removed sections: N/A
+- Version change: 0.1.0 -> 0.2.0
+- Modified principles: Added VI. High-Quality Testing Standard
+- Added sections: None
+- Removed sections: None
 - Templates requiring updates (✅ updated / ⚠ pending):
   - ✅ .specify/templates/plan-template.md
   - ✅ .specify/templates/spec-template.md
@@ -29,6 +29,9 @@ Memory footprint for active game rooms MUST be minimized; inactive rooms MUST be
 ### V. Simplicity & Scope Discipline
 Strict adherence to project boundaries. No unrelated refactors, no spectator mode, no moderation/kick features, no room passwords, no deployment work. Start simple; if it is not explicitly required by the user, it is out of scope.
 
+### VI. High-Quality Testing Standard
+Maintain a minimum of 90% code coverage. Use Vitest for all unit and integration testing. Automated testing MUST be verified as passing for all features before any code is merged.
+
 ## Technical Stack & Architectural Constraints
 
 ### Implementation Requirements
@@ -36,6 +39,7 @@ Strict adherence to project boundaries. No unrelated refactors, no spectator mod
 - **Frontend**: React Functional components, React Router (v6), Vite.
 - **State**: Complex state in `src/state` (Zustand/Context API).
 - **Styling**: Vanilla CSS or CSS modules. No external styling libraries like Tailwind unless requested.
+- **Testing**: Vitest for all unit/integration tests.
 
 ## Workflow Standards
 
@@ -43,6 +47,7 @@ Strict adherence to project boundaries. No unrelated refactors, no spectator mod
 - All PRs and code changes must be reviewed against these core principles.
 - Maintain a clean structural component hierarchy.
 - No hacking around strict type definitions or disabling linting.
+- Every feature must have associated automated tests verified before merging.
 
 ## Governance
 
@@ -56,4 +61,4 @@ This constitution serves as the foundational authority for all development decis
    - PATCH: Clarifications, typo fixes.
 4. **Compliance Review**: All PRs must include a check against this constitution in the review process.
 
-**Version**: 0.1.0 | **Ratified**: 2026-06-01 | **Last Amended**: 2026-06-01
+**Version**: 0.2.0 | **Ratified**: 2026-06-01 | **Last Amended**: 2026-06-01
