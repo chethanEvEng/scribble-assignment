@@ -1,50 +1,59 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- 
+Sync Impact Report:
+- Version change: N/A -> 0.1.0
+- Modified principles: N/A (Initial constitution)
+- Added sections: Core Principles, Technical Stack & Architectural Constraints, Workflow Standards, Governance
+- Removed sections: N/A
+- Templates requiring updates (✅ updated / ⚠ pending):
+  - ✅ .specify/templates/plan-template.md
+  - ✅ .specify/templates/spec-template.md
+  - ⚠ .specify/templates/tasks-template.md
+- Follow-up TODOs: None
+-->
+# Scribble Assignment Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. TypeScript-First (Strict Mode)
+All code MUST be written in TypeScript with strict mode enabled. Type safety is non-negotiable and provides the foundation for system reliability.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Stack Integrity & Protocol
+The application MUST strictly adhere to the defined stack: React (v18), Vite, TypeScript for frontend; Node.js, Express, TypeScript, Zod, `tsx` for backend. Inter-service communication MUST use HTTP polling exclusively. No WebSockets, no Socket.io, no database/persistent storage, no authentication.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Architectural Standards
+The codebase MUST enforce clean separation: `src/api` for routes/handling, `src/services` for business logic, `src/models` for data entities, `src/state` for complex state. Use functional components, immutable structures, pure functions, and centralized error handling (backend). Frontend MUST NOT crash on API exceptions.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Functional Minimalism
+Memory footprint for active game rooms MUST be minimized; inactive rooms MUST be explicitly removed. No custom word packs; only starter seed data. No extra features (rounds, timers, bonuses, etc.) unless explicitly added to scope. No unjustified top-level dependencies.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Simplicity & Scope Discipline
+Strict adherence to project boundaries. No unrelated refactors, no spectator mode, no moderation/kick features, no room passwords, no deployment work. Start simple; if it is not explicitly required by the user, it is out of scope.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technical Stack & Architectural Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Implementation Requirements
+- **Backend**: Express, Zod for all request/response validation. Centralized error handling.
+- **Frontend**: React Functional components, React Router (v6), Vite.
+- **State**: Complex state in `src/state` (Zustand/Context API).
+- **Styling**: Vanilla CSS or CSS modules. No external styling libraries like Tailwind unless requested.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Workflow Standards
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Code Quality & Maintenance
+- All PRs and code changes must be reviewed against these core principles.
+- Maintain a clean structural component hierarchy.
+- No hacking around strict type definitions or disabling linting.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution serves as the foundational authority for all development decisions within this project.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+1. **Compliance**: Every change must verify compliance with these principles.
+2. **Amendments**: Changes to principles require a documented proposal, impact analysis, and validation plan.
+3. **Versioning**:
+   - MAJOR: Backward-incompatible governance or principle changes.
+   - MINOR: New principle additions or material expanded guidance.
+   - PATCH: Clarifications, typo fixes.
+4. **Compliance Review**: All PRs must include a check against this constitution in the review process.
+
+**Version**: 0.1.0 | **Ratified**: 2026-06-01 | **Last Amended**: 2026-06-01
