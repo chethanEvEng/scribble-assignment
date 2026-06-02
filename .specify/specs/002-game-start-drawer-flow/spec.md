@@ -44,7 +44,16 @@ The host starts the game, which designates the host as the drawer, who is then i
 
 - *Note: Room joining with an empty name is prevented by US1.*
 - *Note: Game start with only 1 player is prevented by existing 001-room-setup-lobby requirements.*
+- **Host Disconnection**: If the host disconnects after the game starts, the system MUST end the game immediately and notify all remaining players.
+- **Late Joins**: The system MUST disallow players from joining a room after the game has started.
 
+
+## Clarifications
+
+### Session 2026-06-03
+- Q: What happens if the host disconnects immediately after starting the game? → A: End game immediately; notify remaining players.
+- Q: What defines "game state" visibility—API endpoint structure or frontend display? → A: Client-side logic (Frontend conditionally renders based on `isDrawer` flag).
+- Q: Can players join a room that has already started, and if so, what happens? → A: Disallow late joins; redirect to lobby or error.
 
 ## Requirements *(mandatory)*
 
@@ -53,7 +62,7 @@ The host starts the game, which designates the host as the drawer, who is then i
 - **FR-001**: System MUST trim player names and reject empty or whitespace-only names during room creation.
 - **FR-002**: System MUST designate the host as the drawer upon game start.
 - **FR-003**: System MUST deterministically select a secret word from the starter list at the start of the round.
-- **FR-004**: System MUST ensure the secret word is accessible only to the designated drawer in the game state.
+- **FR-004**: System MUST ensure the secret word is accessible only to the designated drawer. The backend provides the word, and the frontend MUST use client-side logic to conditionally hide it for non-drawers.
 
 ### Key Entities
 
