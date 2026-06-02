@@ -54,6 +54,7 @@ export function createRoom(playerName?: string) {
   const room: Room = {
     code: generateUniqueCode(),
     status: "lobby",
+    hostId: participant.id,
     participants: [participant],
     createdAt: now(),
     updatedAt: now()
@@ -74,7 +75,16 @@ export function joinRoom(code: string, playerName?: string) {
     return null;
   }
 
-  const participant = createParticipant(playerName);
+  if (room.participants.length >= 8) {
+    throw new Error("Room is full (max 8 players)");
+  }
+
+  const normalizedName = (playerName || "Player").trim();
+  if (room.participants.some(p => p.name.toLowerCase() === normalizedName.toLowerCase())) {
+    throw new Error("Name already taken in this room");
+  }
+
+  const participant = createParticipant(normalizedName);
   room.participants.push(participant);
   room.updatedAt = now();
   rooms.set(room.code, room);
@@ -96,12 +106,29 @@ export function saveRoom(room: Room) {
   return getRoom(room.code);
 }
 
-export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
-  void viewerParticipantId;
+export function leaveRoom(code: string, participantId: string) {
+  const room = rooms.get(code);
+  if (!room) return;
 
+  if (room.hostId === participantId) {
+    rooms.delete(code);
+    return;
+  }
+
+  const index = room.participants.findIndex(p => p.id === participantId);
+  if (index !== -1) {
+    room.participants.splice(index, 1);
+    room.updatedAt = now();
+    rooms.set(code, room);
+  }
+}
+
+export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
   return {
     code: room.code,
     status: room.status,
+    hostId: room.hostId,
+    isHost: room.hostId === viewerParticipantId,
     participants: room.participants.map((participant) => ({ ...participant })),
     availableWords: listWords(),
     roles: [...STARTER_ROLES]

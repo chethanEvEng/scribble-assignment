@@ -1,15 +1,15 @@
 import { z } from "zod";
 
 export const createRoomSchema = z.object({
-  playerName: z.string().optional()
+  playerName: z.string().min(1).max(20).trim()
 });
 
 export const joinRoomSchema = z.object({
-  playerName: z.string().optional()
+  playerName: z.string().min(1).max(20).trim()
 });
 
 export const roomCodeParamsSchema = z.object({
-  code: z.string()
+  code: z.string().length(4).regex(/^[A-Z2-9]+$/)
 });
 
 export const roomViewerQuerySchema = z.object({

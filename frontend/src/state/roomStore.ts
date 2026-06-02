@@ -18,7 +18,7 @@ export interface RoomState {
 
 type Listener = () => void;
 
-class RoomStore {
+export class RoomStore {
   private state: RoomState = {
     room: null,
     participantId: null,
@@ -27,6 +27,8 @@ class RoomStore {
   };
 
   private listeners = new Set<Listener>();
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
+  private isFetching = false;
 
   subscribe = (listener: Listener) => {
     this.listeners.add(listener);
@@ -36,6 +38,18 @@ class RoomStore {
   };
 
   getSnapshot = () => this.state;
+
+  startPolling() {
+    if (this.pollInterval) return;
+    this.pollInterval = setInterval(() => this.fetchRoom(), 2000);
+  }
+
+  stopPolling() {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
+  }
 
   private setState(nextState: Partial<RoomState>) {
     this.state = {
@@ -90,13 +104,36 @@ class RoomStore {
   }
 
   async fetchRoom() {
-    if (!this.state.room) {
+    if (!this.state.room || this.isFetching) {
       return null;
     }
 
-    const response = await api.fetchRoom(this.state.room.code, this.state.participantId ?? undefined);
-    this.setRoomSnapshot(response.room);
-    return response.room;
+    try {
+      this.isFetching = true;
+      const response = await api.fetchRoom(this.state.room.code, this.state.participantId ?? undefined);
+      this.setRoomSnapshot(response.room);
+      return response.room;
+    } catch (error) {
+      // Don't set global error state for polling failures to avoid UI flicker,
+      // but log it or handle 404 for room closure.
+      if (error instanceof Error && error.message.includes("404")) {
+         this.setState({ error: "Room closed or not found", room: null });
+         this.stopPolling();
+      }
+      return null;
+    } finally {
+      this.isFetching = false;
+    }
+  }
+
+  async startGame() {
+    if (!this.state.room || !this.state.participantId) {
+      return null;
+    }
+
+    return await this.withLoading(() =>
+      api.startGame(this.state.room!.code, this.state.participantId!)
+    );
   }
 }
 
