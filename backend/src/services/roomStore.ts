@@ -79,6 +79,10 @@ export function joinRoom(code: string, playerName?: string) {
     throw new Error("Room is full (max 8 players)");
   }
 
+  if (room.status === "in-game") {
+    throw new Error("Cannot join a game in progress");
+  }
+
   const normalizedName = (playerName || "Player").trim();
   if (room.participants.some(p => p.name.toLowerCase() === normalizedName.toLowerCase())) {
     throw new Error("Name already taken in this room");
@@ -123,14 +127,34 @@ export function leaveRoom(code: string, participantId: string) {
   }
 }
 
+export function startGame(code: string, hostId: string) {
+  const room = rooms.get(code);
+  if (!room || room.status !== "lobby" || room.hostId !== hostId) {
+    throw new Error("Cannot start game");
+  }
+
+  const words = listWords();
+  const wordIndex = room.code.length % words.length;
+
+  room.status = "in-game";
+  room.drawerId = room.hostId;
+  room.currentWord = words[wordIndex];
+  room.updatedAt = now();
+  rooms.set(code, room);
+
+  return saveRoom(room);
+}
+
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
   return {
     code: room.code,
     status: room.status,
     hostId: room.hostId,
     isHost: room.hostId === viewerParticipantId,
-    participants: room.participants.map((participant) => ({ ...participant })),
-    availableWords: listWords(),
-    roles: [...STARTER_ROLES]
+    participants: room.participants.map((participant) => ({
+      ...participant,
+      isDrawer: participant.id === room.drawerId
+    })),
+    currentWord: room.drawerId === viewerParticipantId ? room.currentWord : null
   };
 }

@@ -15,7 +15,7 @@ export function LobbyPage() {
     if (!room) {
       navigate("/", { replace: true });
     } else {
-      if (room.status === "game") {
+      if (room.status === "in-game") {
         navigate("/game");
       }
       roomStore.startPolling();

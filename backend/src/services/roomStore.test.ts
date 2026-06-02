@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createRoom, joinRoom, leaveRoom, getRoom } from "./roomStore.js";
+import { createRoom, joinRoom, leaveRoom, getRoom, startGame } from "./roomStore.js";
 
 describe("roomStore", () => {
   it("createRoom returns a room with a 4-character uppercase code and assigns host", () => {
@@ -57,5 +57,27 @@ describe("roomStore", () => {
     const room = getRoom(code)!;
     expect(room.participants).toHaveLength(1);
     expect(room.participants[0].name).toBe("Alice");
+  });
+
+  it("startGame sets room to in-game, assigns host as drawer, and selects a word", () => {
+    const result = createRoom("Alice");
+    const code = result.room.code;
+    const hostId = result.participantId;
+
+    const room = startGame(code, hostId);
+
+    expect(room.status).toBe("in-game");
+    expect(room.drawerId).toBe(hostId);
+    expect(room.currentWord).toBeDefined();
+    expect(typeof room.currentWord).toBe("string");
+  });
+
+  it("startGame throws error if not called by host", () => {
+    const result = createRoom("Alice");
+    const code = result.room.code;
+    const playerResult = joinRoom(code, "Bob")!;
+    const notHostId = playerResult.participantId;
+
+    expect(() => startGame(code, notHostId)).toThrow("Cannot start game");
   });
 });

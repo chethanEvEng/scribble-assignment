@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const createRoomSchema = z.object({
-  playerName: z.string().min(1).max(20).trim()
+  playerName: z.string().trim().min(1, "Player name invalid").max(20, "Player name invalid")
 });
 
 export const joinRoomSchema = z.object({
-  playerName: z.string().min(1).max(20).trim()
+  playerName: z.string().trim().min(1, "Player name invalid").max(20, "Player name invalid")
 });
 
 export const roomCodeParamsSchema = z.object({

@@ -13,11 +13,6 @@ export function JoinRoomPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!playerName.trim()) {
-      setError("Player name is required");
-      return;
-    }
-
     if (roomCode.length !== 4) {
       setError("Room code must be 4 characters");
       return;

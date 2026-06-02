@@ -48,6 +48,13 @@ export function GamePage() {
         </div>
 
         <aside className="game-page__sidebar game-page__sidebar--right">
+          {viewer?.isDrawer && room.currentWord && (
+            <Card title="Secret Word">
+              <p className="secret-word" style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center' }}>
+                {room.currentWord}
+              </p>
+            </Card>
+          )}
           <Card title="Player Info">
             <dl className="detail-list">
               <div>
