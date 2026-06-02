@@ -22,7 +22,7 @@ Implement robust player name validation during room join/creation and game start
 
 **Performance Goals**: < 100ms API response time
 
-**Constraints**: Adhere strictly to Constitution (No WebSockets, No Auth, HTTP polling only)
+**Constraints**: Adhere strictly to Constitution (No WebSockets, No Auth, HTTP polling only). Client-side masking of the secret word (backend provides `currentWord` in state, frontend MUST conditionally mask based on `isDrawer` client-side flag).
 
 **Scale/Scope**: Small scale (concurrent active rooms)
 
@@ -37,6 +37,10 @@ Compliance verified:
 4. **Minimalism**: No unjustified dependencies.
 5. **Scope**: Strictly adhere to defined features.
 6. **Testing**: Vitest, >90% coverage.
+
+## Failure Modes
+
+- **Host Disconnection**: Upon host disconnection after game start, the backend MUST immediately clear the room state and notify remaining clients via the next polling response to prevent orphan game sessions.
 
 ## Project Structure
 

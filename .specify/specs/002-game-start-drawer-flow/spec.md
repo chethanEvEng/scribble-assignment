@@ -54,29 +54,28 @@ The host starts the game, which designates the host as the drawer, who is then i
 - Q: What happens if the host disconnects immediately after starting the game? → A: End game immediately; notify remaining players.
 - Q: What defines "game state" visibility—API endpoint structure or frontend display? → A: Client-side logic (Frontend conditionally renders based on `isDrawer` flag).
 - Q: Can players join a room that has already started, and if so, what happens? → A: Disallow late joins; redirect to lobby or error.
+- Q: Backend or frontend masking for secret word? → A: Backend filters `currentWord` for non-drawers.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: System MUST trim player names and reject empty or whitespace-only names during room creation.
-- **FR-002**: System MUST designate the host as the drawer upon game start.
-- **FR-003**: System MUST deterministically select a secret word from the starter list at the start of the round.
-- **FR-004**: System MUST ensure the secret word is accessible only to the designated drawer. The backend provides the word, and the frontend MUST use client-side logic to conditionally hide it for non-drawers.
-
-### Key Entities
-
-- **Room**: Contains game state, `drawerId`, `currentWord`.
-- **Participant**: Contains player information and role/drawing status.
+- **FR-001**: System MUST trim player names and reject empty/whitespace-only names during room creation, displaying error message "Player name invalid". Validation criteria: 1-20 characters, no leading/trailing whitespace.
+- **FR-002**: System MUST designate the host as the drawer upon game start. Host transition from 'lobby' to 'in-game' MUST be atomic.
+- **FR-003**: System MUST deterministically select a secret word from `backend/src/seed/starterData.ts` at the start of the round (algorithm: `starterList[roomId.length % starterList.length]`). Words MUST not repeat until full set is exhausted.
+- **FR-004**: System MUST ensure the secret word is accessible only to the designated drawer. The backend MUST filter `currentWord` from the game state API response for non-drawers.
+- **FR-005**: Host disconnection after game start MUST result in immediate game end, clearing room state, and notifying remaining clients in the next poll.
+- **FR-006**: Late joining MUST be forbidden; 'in-game' join attempts MUST return "Room has already started".
+- **FR-007**: Loading failures MUST display "Something went wrong" while retaining existing state in UI.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: 100% of room creation requests with invalid names (empty/whitespace) are rejected with a user-friendly error message.
+- **SC-001**: 100% of room creation requests with invalid names (empty/whitespace/length >20) are rejected with "Player name invalid".
 - **SC-002**: Upon game start, a drawer is always assigned to the host.
-- **SC-003**: The secret word is visible 100% of the time only to the drawer in the game state (0% leaks).
-- **SC-004**: Word selection is consistent and deterministic.
+- **SC-003**: The secret word is visible 100% of the time only to the drawer (0% leaks).
+- **SC-004**: Word selection is deterministic: Given identical Room ID and word list, the selected word is always identical.
 
 ## Assumptions
 

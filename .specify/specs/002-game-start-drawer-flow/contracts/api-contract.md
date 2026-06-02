@@ -1,28 +1,34 @@
 # API Contract: Game Start & Drawer Flow
 
-## Room Creation and Join
-- **Endpoint**: `POST /rooms` or `POST /rooms/:code/join`
-- **Request Body**: `{ playerName: string }`
-- **Validation**: `playerName` must be trimmed; empty/whitespace-only strings result in 400 Bad Request.
+## Endpoints
 
-## Game Start
-- **Endpoint**: `POST /rooms/:code/start`
-- **Headers**: `x-participant-id` (Host ID required)
-- **Response**: `{ success: boolean }`
+### POST /api/rooms/:roomId/start
+- **Description**: Starts the game.
+- **Request**:
+  - `roomId` (params)
+- **Response**:
+  - `200 OK`: `{ "status": "success" }`
+  - `400 Bad Request`: `{ "error": "Invalid request" }`
+  - `404 Not Found`: `{ "error": "Room not found" }`
 
-## Game State (Room Snapshot)
-- **Endpoint**: `GET /rooms/:code`
-- **Response**: 
-```json
-{
-  "code": "ABCD",
-  "status": "game",
-  "hostId": "...",
-  "isHost": boolean,
-  "participants": [...],
-  "availableWords": [...],
-  "roles": [...],
-  "drawerId": "...",
-  "currentWord": "..." // Only visible if viewer is the drawer
+### GET /api/rooms/:roomId/state
+- **Description**: Polls the current room state.
+- **Request**:
+  - `roomId` (params)
+- **Response**:
+  - `200 OK`: `RoomSnapshot`
+  - `404 Not Found`: `{ "error": "Room not found" }`
+
+## Data Structures
+
+### RoomSnapshot
+```typescript
+interface RoomSnapshot {
+  id: string;
+  status: 'lobby' | 'in-game' | 'ended';
+  participants: Participant[];
+  drawerId: string | null;
+  currentWord: string | null; // Filtered by backend for non-drawers
+  hostId: string;
 }
 ```

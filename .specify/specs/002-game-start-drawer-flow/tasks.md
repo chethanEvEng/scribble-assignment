@@ -1,62 +1,59 @@
 # Tasks: Game Start & Drawer Flow
 
-**Input**: Design documents from `.specify/specs/002-game-start-drawer-flow/`
+**Feature**: Game Start & Drawer Flow
+**Branch**: `002-game-start-drawer-flow`
 
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+## Phase 1: Setup
 
-## Dependencies
-- US1 (Name Validation) -> Independent
-- US2 (Game Start) -> Depends on US1
-- US3 (Secret Word Visibility) -> Depends on US2
-
-## MVP Scope
-- User Story 1: Player Name Validation for Room Access
-
-## Phase 1: Setup (Shared Infrastructure)
-
-- [ ] T001 Initialize feature structure and ensure backend/frontend readiness
+- [ ] T001 Initialize project structure for feature branch
+- [ ] T002 [P] Install necessary dependencies (zod)
+- [ ] T003 [P] Configure linting and Vitest settings
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] T002 [P] Update Room and Participant model in backend/src/models/game.ts to include drawerId and currentWord
+- [ ] T004 Define Room model in backend/src/models/game.ts
+- [ ] T005 Define Participant model in backend/src/models/game.ts
+- [ ] T006 Implement Room service in backend/src/services/roomStore.ts
+- [ ] T007 Setup API router in backend/src/api/router.ts
 
 ---
 
-## Phase 3: [US1] Player Name Validation for Room Access (Priority: P1)
+## Phase 3: User Story 1 - Player Name Validation (Priority: P1) 🎯 MVP
 
-**Goal**: Ensure room access requires valid, non-empty player names.
+**Goal**: Implement player name validation (trimming, rejecting empty/whitespace-only).
 
-**Independent Test**: Can be tested by creating/joining a room with empty/whitespace names and verifying rejection.
+**Independent Test**: Create/join room with "" or "   " and verify error.
 
-- [ ] T003 [P] [US1] Update `createRoom` and `joinRoom` name normalization in backend/src/services/roomStore.ts
-- [ ] T004 [US1] Update room creation/join endpoints for error handling in backend/src/api/rooms.ts
-
----
-
-## Phase 4: [US2] Game Start and Drawer Designation (Priority: P1)
-
-**Goal**: Implement game start mechanics (host drawer, secret word).
-
-**Independent Test**: Can be tested by starting a game as host and verifying drawer designation by looking at the secret word(only visible to drawer).
-
-- [ ] T005 [P] [US2] Implement `startGame` logic (assign host drawer, pick random word) in backend/src/services/roomStore.ts
-- [ ] T006 [US2] Add/update start game endpoint in backend/src/api/rooms.ts
+- [ ] T008 [US1] Implement name validation logic in backend/src/api/schemas.ts
+- [ ] T009 [US1] Update room creation/join endpoint to use validation in backend/src/api/rooms.ts
+- [ ] T010 [P] [US1] Create frontend validation service in frontend/src/services/api.ts
+- [ ] T011 [US1] Add error handling for name validation in frontend/src/pages/CreateRoomPage.tsx
+- [ ] T012 [US1] Add error handling for name validation in frontend/src/pages/JoinRoomPage.tsx
+- [ ] T008a [P] [US1] Unit tests for name validation in backend/tests/api/schemas.test.ts
+- [ ] T008b [P] [US1] Integration tests for room join/create in backend/tests/api/rooms.test.ts
 
 ---
 
-## Phase 5: [US3] Secret Word Visibility (Priority: P2)
+## Phase 4: User Story 2 - Game Start & Drawer (Priority: P1) 🎯 MVP
 
-**Goal**: Ensure secret word is visible only to the drawer.
+**Goal**: Implement game start, drawer designation, and secret word visibility.
 
-**Independent Test**: Can be tested by checking game state response for the drawer versus other participants.
+**Independent Test**: Host starts game, verify they are drawer and see secret word.
 
-- [ ] T007 [P] [US3] Update `toRoomSnapshot` in backend/src/services/roomStore.ts to restrict `currentWord` access
-- [ ] T008 [US3] Update `RoomSnapshot` interface in frontend/src/services/api.ts to include drawerId/currentWord
+- [ ] T013 [US2] Implement startGame logic in backend/src/services/roomStore.ts
+- [ ] T014 [US2] Implement secret word selection in backend/src/services/roomStore.ts
+- [ ] T015 [US2] Update game state API to include drawerId/currentWord in backend/src/api/rooms.ts
+- [ ] T016 [US2] Implement client-side drawer masking logic in frontend/src/state/roomStore.ts
+- [ ] T017 [US2] Implement secret word visibility in frontend/src/components/Card.tsx
+- [ ] T013a [P] [US2] Unit tests for startGame and drawer logic in backend/tests/services/roomStore.test.ts
+- [ ] T014a [P] [US2] Unit tests for deterministic word selection in backend/tests/services/roomStore.test.ts
+- [ ] T016a [P] [US2] Frontend component tests for masking logic in frontend/tests/components/Card.test.tsx
 
 ---
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T009 Final review of all changes for compliance with project constitution
+- [ ] T018 [P] Implement host disconnection logic in backend/src/services/roomStore.ts
+- [ ] T019 [P] Prevent late joins in backend/src/api/rooms.ts

@@ -3,21 +3,22 @@
 ## Entities
 
 ### Room
-- `code`: string (4-char unique identifier)
-- `status`: "lobby" | "game"
-- `hostId`: string
-- `participants`: Participant[]
-- `createdAt`: string
-- `updatedAt`: string
-- `drawerId`: string | null
-- `currentWord`: string | null
+- `id` (string, unique): Room identifier.
+- `status` (enum: 'lobby', 'in-game', 'ended'): Current state of the game.
+- `participants` (Map<string, Participant>): List of players in the room.
+- `drawerId` (string | null): ID of the current drawer (assigned to host on start).
+- `currentWord` (string | null): The secret word for the current round (deterministically selected).
+- `hostId` (string): ID of the room creator/host.
 
 ### Participant
-- `id`: string
-- `name`: string
-- `joinedAt`: string
+- `id` (string, unique): Player identifier.
+- `name` (string): Trimmed player name.
+- `isDrawer` (boolean): Computed property (true if `id === drawerId`).
+
+## Validation Rules
+- `name`: Must be trimmed, not empty, not whitespace-only.
+- `currentWord`: Must be deterministically selected from `backend/src/seed/starterData.ts`.
 
 ## State Transitions
-- `lobby` -> `game`: Triggered by `startGame`. On transition:
-    - `drawerId` is set to `hostId`.
-    - `currentWord` is set to the next available word in the starter list.
+- 'lobby' -> 'in-game': Triggered by `startGame`.
+- 'in-game' -> 'ended': Triggered by game end condition or host disconnection.
