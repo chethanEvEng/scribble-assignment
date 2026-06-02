@@ -135,6 +135,18 @@ export class RoomStore {
       api.startGame(this.state.room!.code, this.state.participantId!)
     );
   }
+
+  async updateCanvas(drawingEvents: any) {
+    if (!this.state.room || !this.state.participantId) {
+      return null;
+    }
+
+    return await api.updateCanvas(
+      this.state.room.code,
+      this.state.participantId,
+      drawingEvents
+    );
+  }
 }
 
 const RoomStoreContext = createContext<RoomStore | null>(null);

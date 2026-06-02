@@ -16,6 +16,14 @@ export const roomViewerQuerySchema = z.object({
   participantId: z.string().optional()
 });
 
+export const submitGuessSchema = z.object({
+  guess: z.string().trim().min(1, "Guess cannot be empty")
+});
+
+export const updateCanvasSchema = z.object({
+  drawingEvents: z.any()
+});
+
 export class HttpError extends Error {
   statusCode: number;
 

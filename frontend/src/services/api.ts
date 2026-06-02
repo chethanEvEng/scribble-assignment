@@ -15,6 +15,9 @@ export interface RoomSnapshot {
   isHost: boolean;
   participants: Participant[];
   currentWord: string | null;
+  canvasData: any;
+  guessHistory: any[];
+  scoreboard: any;
 }
 
 export interface RoomSessionResponse {
@@ -43,9 +46,14 @@ async function request<T>(path: string, init?: RequestInit) {
 
   return (await response.json()) as T;
 }
-
 export const api = {
+  // ... existing methods
+  getCurrentDrawer(room: RoomSnapshot) {
+    return room.participants.find((p) => p.isDrawer);
+  },
   createRoom(playerName: string) {
+// ...
+
     return request<RoomSessionResponse>("/rooms", {
       method: "POST",
       body: JSON.stringify({ playerName })
@@ -67,6 +75,26 @@ export const api = {
       headers: {
         "x-participant-id": participantId
       }
+    });
+  },
+  submitGuess(code: string, participantId: string, guess: string) {
+    return request<{ success: boolean; isCorrect: boolean; pointsAwarded: number }>(`/rooms/${encodeURIComponent(code)}/guess`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-participant-id": participantId
+      },
+      body: JSON.stringify({ guess })
+    });
+  },
+  updateCanvas(code: string, participantId: string, drawingEvents: any) {
+    return request<{ success: boolean }>(`/rooms/${encodeURIComponent(code)}/canvas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-participant-id": participantId
+      },
+      body: JSON.stringify({ drawingEvents })
     });
   }
 };

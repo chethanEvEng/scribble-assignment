@@ -139,6 +139,9 @@ export function startGame(code: string, hostId: string) {
   room.status = "in-game";
   room.drawerId = room.hostId;
   room.currentWord = words[wordIndex];
+  room.canvasData = null;
+  room.guessHistory = [];
+  room.scoreboard = room.participants.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {});
   room.updatedAt = now();
   rooms.set(code, room);
 
@@ -155,6 +158,9 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
       ...participant,
       isDrawer: participant.id === room.drawerId
     })),
-    currentWord: room.drawerId === viewerParticipantId ? room.currentWord : null
+    currentWord: room.drawerId === viewerParticipantId ? room.currentWord : null,
+    canvasData: room.canvasData,
+    guessHistory: room.guessHistory,
+    scoreboard: room.scoreboard
   };
 }

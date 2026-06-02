@@ -7,6 +7,15 @@ export interface Participant {
   joinedAt: string;
 }
 
+export interface Guess {
+  playerId: string;
+  text: string;
+  isCorrect: boolean;
+  timestamp: string;
+}
+
+export type Scoreboard = Record<string, number>;
+
 export interface Room {
   code: string;
   status: RoomStatus;
@@ -16,6 +25,9 @@ export interface Room {
   currentWord: string | null;
   createdAt: string;
   updatedAt: string;
+  canvasData: any;
+  guessHistory: Guess[];
+  scoreboard: Scoreboard;
 }
 
 export interface RoomSnapshot {
@@ -25,6 +37,9 @@ export interface RoomSnapshot {
   isHost: boolean;
   participants: (Participant & { isDrawer: boolean })[];
   currentWord: string | null;
+  canvasData: any;
+  guessHistory: Guess[];
+  scoreboard: Scoreboard;
 }
 
 export interface RoomSessionResponse {
