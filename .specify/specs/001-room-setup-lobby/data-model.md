@@ -7,50 +7,41 @@ Represents a game session.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `code` | `string` | 4-character uppercase alphanumeric code (unique). |
+| `code` | `string` | 4-character unique uppercase code. |
 | `status` | `"lobby" \| "game"` | Current state of the room. |
-| `hostId` | `string` | The `id` of the participant who is the host. |
-| `participants` | `Participant[]` | List of players currently in the room. |
-| `createdAt` | `string` | ISO timestamp of creation. |
-| `updatedAt` | `string` | ISO timestamp of last update. |
+| `hostId` | `string` | The `id` of the participant who created the room. |
+| `participants` | `Participant[]` | List of players (max 8). |
+| `createdAt` | `string` | ISO timestamp. |
+| `updatedAt` | `string` | ISO timestamp. |
 
 ### Participant
-Represents a player in a room.
+Represents a player.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `string` | Unique identifier (UUID). |
-| `name` | `string` | Player's display name (minimum 1 character). |
-| `joinedAt` | `string` | ISO timestamp when the player joined. |
+| `id` | `string` | Unique UUID. |
+| `name` | `string` | Display name (unique within room). |
+| `joinedAt` | `string` | ISO timestamp. |
 
 ---
 
 ## State Transitions
 
-### 1. Lobby Creation
-- **Trigger**: `POST /api/rooms`
-- **Initial State**: `status: "lobby"`
-- **Action**: Generate unique `code`, create first `Participant`, set `hostId` to this participant's `id`.
+### 1. Create Room
+- **Action**: `POST /api/rooms`
+- **Transition**: `null` -> `lobby`
+- **Result**: Room created, creator assigned as `hostId`, first participant added.
 
-### 2. Joining Lobby
-- **Trigger**: `POST /api/rooms/:code/join`
-- **Condition**: Room exists, `status: "lobby"`.
-- **Action**: Create new `Participant`, add to `participants` list.
+### 2. Join Room
+- **Action**: `POST /api/rooms/:code/join`
+- **Constraint**: `participants.length < 8`, `name` must be unique in room.
+- **Transition**: `lobby` -> `lobby` (updated participants)
 
-### 3. Starting Game
-- **Trigger**: `POST /api/rooms/:code/start` (Host only)
-- **Condition**: Room exists, `status: "lobby"`, `participants.length >= 2`.
-- **Action**: Set `status: "game"`.
+### 3. Start Game
+- **Action**: `POST /api/rooms/:code/start`
+- **Constraint**: `requestingParticipantId === hostId`, `participants.length >= 2`.
+- **Transition**: `lobby` -> `game`
 
----
-
-## Validation Rules
-
-### Room Code
-- Must be exactly 4 characters.
-- Must be alphanumeric.
-- Must exist in the system for joining.
-
-### Player Name
-- Must be between 1 and 20 characters.
-- Cannot be just whitespace.
+### 4. Close Room
+- **Action**: Host leaves room.
+- **Transition**: `lobby | game` -> `null` (deleted)

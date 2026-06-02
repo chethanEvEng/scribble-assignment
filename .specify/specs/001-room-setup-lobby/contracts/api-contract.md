@@ -1,4 +1,4 @@
-# API Contract: Room Management
+# API Contract: Room Setup & Lobby
 
 ## Base URL: `/api/rooms`
 
@@ -8,22 +8,22 @@
 **Request Body**:
 ```json
 {
-  "playerName": "Alice"
+  "playerName": "string (optional)"
 }
 ```
 
 **Response (201 Created)**:
 ```json
 {
-  "participantId": "uuid-1",
+  "participantId": "string (UUID)",
   "room": {
-    "code": "ABCD",
+    "code": "string",
     "status": "lobby",
-    "hostId": "uuid-1",
-    "isHost": true,
+    "hostId": "string",
     "participants": [
-      { "id": "uuid-1", "name": "Alice", "joinedAt": "timestamp" }
-    ]
+      { "id": "uuid", "name": "name", "joinedAt": "iso" }
+    ],
+    "isHost": true
   }
 }
 ```
@@ -36,29 +36,26 @@
 **Request Body**:
 ```json
 {
-  "playerName": "Bob"
+  "playerName": "string"
 }
 ```
 
 **Response (200 OK)**:
 ```json
 {
-  "participantId": "uuid-2",
+  "participantId": "string (UUID)",
   "room": {
-    "code": "ABCD",
+    "code": "string",
     "status": "lobby",
-    "hostId": "uuid-1",
-    "isHost": false,
-    "participants": [
-      { "id": "uuid-1", "name": "Alice", "joinedAt": "timestamp" },
-      { "id": "uuid-2", "name": "Bob", "joinedAt": "timestamp" }
-    ]
+    "hostId": "string",
+    "participants": [...],
+    "isHost": false
   }
 }
 ```
 
 **Errors**:
-- `400 Bad Request`: "Player name is required"
+- `400 Bad Request`: "Player name is required", "Room is full (max 8 players)"
 - `404 Not Found`: "Room not found"
 
 ---
@@ -70,11 +67,11 @@
 ```json
 {
   "room": {
-    "code": "ABCD",
-    "status": "lobby",
-    "hostId": "uuid-1",
-    "isHost": false,
-    "participants": [...]
+    "code": "string",
+    "status": "lobby | game",
+    "hostId": "string",
+    "participants": [...],
+    "isHost": "boolean"
   }
 }
 ```
@@ -84,8 +81,8 @@
 ### 4. Start Game
 `POST /:code/start`
 
-**Request Headers**:
-- `x-participant-id`: `uuid` (must match `hostId`)
+**Headers**:
+- `x-participant-id`: `uuid` (must be the `hostId`)
 
 **Response (200 OK)**:
 ```json

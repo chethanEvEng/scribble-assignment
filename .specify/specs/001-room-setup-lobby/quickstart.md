@@ -1,32 +1,14 @@
 # Quickstart: Room Setup & Lobby
 
-## Setup
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Start the development servers:
-   ```bash
-   npm run dev
-   ```
+## Development
+1. Start Backend: `cd backend && npm run dev`
+2. Start Frontend: `cd frontend && npm run dev`
 
-## Manual Verification
-1. Open `http://localhost:5173` (Window 1).
-2. Click **Create Room**, enter your name, and submit.
-3. Observe the Room Code (e.g., `ABCD`) and verify you see "Host" badge.
-4. Open a private window or another browser at `http://localhost:5173` (Window 2).
-5. Click **Join Room**, enter your name and the Room Code from Window 1.
-6. **Verify Polling**: Window 1 should automatically show the new participant within 2 seconds.
-7. **Verify Start Restrictions**: 
-   - Window 2 should NOT have a "Start Game" button.
-   - Window 1 should have a "Start Game" button that is enabled once Window 2 joins.
+## Verification
+1. **Host Flow**: Create a room, verify "Host" tag in lobby.
+2. **Join Flow**: Open second window, join with code, verify automatic refresh (US3).
+3. **Capacity**: Join with 8 players, verify 9th player is rejected with clear message.
+4. **Game Start**: Verify host can start only when >= 2 players; verify non-host cannot start.
 
-## Automated Testing
-Run the following commands to verify backend and frontend logic:
-```bash
-# Backend tests
-cd backend && npm test
-
-# Frontend tests
-cd frontend && npm test
-```
+## Tests
+- `npm run test` in both directories.

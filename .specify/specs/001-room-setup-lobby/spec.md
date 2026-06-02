@@ -8,6 +8,12 @@
 
 **Input**: User description: "Room Setup & Lobby Given a player wants to host or join a drawing game, When they create or join a room via a unique code, Then the creator is automatically the host; invalid/empty codes are rejected with clear feedback; rooms are fully isolated; the lobby refreshes via polling (~2s); and only the host can start the game once at least 2 players are present. Analyse the existing codebase to make sure only the missing features from above acceptance criteria is added. Do not reimplement the already existing features."
 
+## Clarifications
+
+### Session 2026-06-02
+- Q: Room Capacity → A: 8 Players
+- Q: Host Disconnection → A: Close room immediately
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Hosting a Game (Priority: P1)
@@ -72,7 +78,10 @@ As a host, I want to start the game once enough players have joined so that we c
 
 - **Invalid Codes**: Handling of codes with special characters or incorrect lengths (e.g., lowercase vs uppercase).
 - **Empty Name**: Preventing players from joining with empty names.
-- **Host Disconnection**: If the host leaves, the room should remain but the "Start Game" privilege might need reassignment (Assumption: Out of scope for this specific task unless requested).
+- **Full Room**: Rejecting new players when capacity reaches 8.
+- **Host Disconnection**: If the host leaves, the room is closed immediately and all other participants are redirected to the start page.
+- **Duplicate Names**: Rejecting players who try to join with a name already present in the room.
+- **Player Refresh**: If a player refreshes, they lose their session and must join again with a unique name.
 
 ## Requirements *(mandatory)*
 
@@ -85,6 +94,10 @@ As a host, I want to start the game once enough players have joined so that we c
 - **FR-005**: System MUST restrict the "Start Game" action to the host only.
 - **FR-006**: System MUST only enable the "Start Game" action when the total number of participants in the room is at least 2.
 - **FR-007**: System MUST notify all participants when the host starts the game (via status change in polled data triggering navigation).
+- **FR-008**: System MUST limit room capacity to a maximum of 8 players and reject join attempts when the room is full.
+- **FR-009**: System MUST close the room and disconnect all participants if the host leaves the lobby.
+- **FR-010**: System MUST reject join attempts with a name that is already taken by another participant in the same room.
+- **FR-011**: System MUST treat returning players as new participants (new ID assigned) if they leave or refresh the page.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -99,9 +112,11 @@ As a host, I want to start the game once enough players have joined so that we c
 - **SC-002**: Lobby updates reflect new participants within 2 seconds (+ network latency) for all connected clients.
 - **SC-003**: Unauthorized start attempts (non-host or < 2 players) are blocked both on the UI and API.
 - **SC-004**: Error messages for invalid codes are displayed immediately upon submission.
+- **SC-005**: 100% of join attempts to full rooms (8 players) are rejected with clear feedback.
 
 ## Assumptions
 
 - Polling is the chosen method for real-time updates as specified in the request.
 - The "Start Game" action will update the room's `status` which will be picked up by other clients via polling.
 - No persistence across server restarts is required (in-memory storage).
+ed (in-memory storage).
