@@ -83,10 +83,29 @@ The following items are intentionally out of scope for this lab:
 - unrelated refactors
 
 ## Relevant Files
-- `backend/src/models/game.ts` - Defines backend room, participant, and role types.
-- `backend/src/services/roomStore.ts` - In-memory room map, CRUD helpers, and snapshot converters.
+- `backend/src/server.ts` - Implements the backend server with Express, Zod, and HTTP routing.
+- `backend/src/app.ts` - Configures Express app with CORS, JSON body parsing, and static file serving.
 - `backend/src/api/rooms.ts` - Implements REST endpoints for creating, joining, and fetching rooms.
+- `backend/src/api/router.ts` - Implements routers for backend APIs and defines error handlers.
 - `backend/src/api/schemas.ts` - Request body validation using Zod.
+- `backend/src/models/game.ts` - Defines backend room, participant, and role types.
 - `backend/src/seed/starterData.ts` - Starter seed data for words and roles.
+- `backend/src/services/roomStore.ts` - In-memory room map, CRUD helpers, and snapshot converters.
+- `frontend/src/main.tsx` - Entry point for the frontend application.
+- `frontend/src/App.tsx` - Top-level app component that renders the main layout and routes.
+- `frontend/src/routes/index.tsx` - Defines routes for starting, creating, joining, and playing the game.
 - `frontend/src/services/api.ts` - Fetch-based HTTP request helper for communication with the backend.
 - `frontend/src/state/roomStore.ts` - React store managing current room, participant ID, loading state, and errors.
+- `frontend/src/components/AppShell.tsx` - Contains top-level layout, navigation, and responsive shell.
+- `frontend/src/components/Card.tsx` - Implements UI for cards.
+- `frontend/src/components/GuessForm.tsx` - Implements guess input form with submit handler. Submit functionality yet to be implemented.
+- `frontend/src/components/PageHeader.tsx` - Implements UI for the page header.
+- `frontend/src/components/ResultPanel.tsx` - Intended for implementing UI for the results panel. Game activity to be displayed here. For now, a placeholder is implemented.
+- `frontend/src/components/RoomCodeBadge.tsx` - Implements UI for rendering room code.
+- `frontend/src/components/Scoreboard.tsx` - Intended for implementing UI for displaying player scores. For now, a placeholder is implemented.
+- `frontend/src/pages/CreateRoomPage.tsx` - Implements UI for creating a room.
+- `frontend/src/pages/JoinRoomPage.tsx` - Implements UI for joining a room.
+- `frontend/src/pages/LobbyPage.tsx` - Implements UI for the lobby.
+- `frontend/src/pages/GamePage.tsx` - Implements UI for the game.
+- `frontend/src/pages/StartPage.tsx` - Contains hero section, play/create/join buttons, and a 2-column layout for the landing page.
+- `frontend/src/style.css` - Implements the global styles for the application. 
