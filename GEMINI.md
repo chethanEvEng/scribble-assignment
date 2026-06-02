@@ -1,3 +1,3 @@
 <!-- SPECKIT START -->
-Read the current implementation plan for Game Start & Drawer Flow: [.specify/specs/002-game-start-drawer-flow/plan.md](.specify/specs/002-game-start-drawer-flow/plan.md)
+Read the current implementation plan for Gameplay Interaction: [.specify/specs/003-gameplay-interaction/plan.md](.specify/specs/003-gameplay-interaction/plan.md)
 <!-- SPECKIT END -->
