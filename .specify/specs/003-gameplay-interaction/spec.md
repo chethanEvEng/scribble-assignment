@@ -78,12 +78,27 @@ Scoreboard and guess history are initialized and synchronized for all players.
 - How does the system handle rapid, near-simultaneous guess submissions from multiple players?
 - What happens if the canvas clearing action is triggered concurrently with a drawing action?
 
+## Clarifications
+
+### Session 2026-06-03
+- Q: Are recovery requirements defined for round state upon potential client-server synchronization failures? → A: Out of scope. Will handle failures specifically in a future spec.
+- Q: Are edge cases like concurrent guess submissions addressed? → A: Out of scope.
+- Q: Does the spec define behavior for canvas clearing during concurrent drawing? → A: Latest wins.
+- Q: Are accessibility requirements (a11y) specified for the drawing interface? → A: Out of scope.
+- Q: Are performance requirements defined under high-polling frequency? → A: Out of scope.
+
+## Out of Scope
+- Recovery requirements for synchronization failures.
+- Concurrency handling for guess submissions.
+- Accessibility (a11y) requirements.
+- Performance tuning for high-polling frequency.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: System MUST render drawing actions performed by the drawer on the canvas.
-- **FR-002**: System MUST support clearing the canvas by the drawer.
+- **FR-002**: System MUST support clearing the canvas by the drawer. In case of concurrent canvas actions, 'Latest wins' strategy applies.
 - **FR-003**: System MUST trim whitespace from all submitted guesses.
 - **FR-004**: System MUST reject empty or whitespace-only guesses.
 - **FR-005**: System MUST compare submitted guesses against the secret word using case-insensitive matching.

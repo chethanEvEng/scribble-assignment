@@ -54,10 +54,10 @@ backend/
 
 frontend/
 ├── src/
-│   ├── components/
-│   │   ├── Canvas.tsx         # Drawing interaction
-│   │   ├── GuessForm.tsx      # Guess submission
-│   │   └── Activity.tsx       # Guess history
+├── components/
+│   ├── Canvas.tsx         # Drawing interaction
+│   ├── GuessForm.tsx      # Guess submission
+│   └── ResultPanel.tsx       # Guess history
 │   ├── services/
 │   │   └── api.ts            # Polling integration
 │   └── state/
