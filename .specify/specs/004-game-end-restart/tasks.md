@@ -35,11 +35,12 @@
 
 - [ ] T003 [P] Add `RoomStatus` 'ended' and reveal logic in `backend/src/models/game.ts`
 - [ ] T004 [P] Update `toRoomSnapshot` in `backend/src/services/roomStore.ts` to reveal `currentWord` when status is 'ended'
-- [ ] T005 [P] Implement `endGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks if participant is host)
-- [ ] T006 [P] Implement `restartGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks if participant is host, clears state per data-model.md)
-- [ ] T007 Add `end` and `restart` endpoints to `backend/src/api/rooms.ts`
+- [ ] T005 [P] Implement `endGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks if participant is host, sets status)
+- [ ] T006 [P] Implement `restartGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks host, clears state per data-model.md, resets scoreboard)
+- [ ] T007 Add `end` and `restart` endpoints to `backend/src/api/rooms.ts` with 400 guards for invalid state transitions
 - [ ] T008 [P] Add `endGame` and `restartGame` methods to `frontend/src/services/api.ts`
 - [ ] T009 [P] Expose `endGame` and `restartGame` in `frontend/src/state/roomStore.ts`
+- [ ] T010 [P] Add toast notification logic for host action failures in `frontend/src/state/roomStore.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -47,84 +48,85 @@
 
 ## Phase 3: User Story 5 - Automatic Round Completion (Priority: P1) 🎯 MVP
 
-**Goal**: The system automatically ends the round once all guessers have identified the secret word.
+**Goal**: The system automatically ends the round once all active guessers have identified the secret word.
 
 **Independent Test**: Have all guessers submit the correct word and verify the round status transitions to 'ended' immediately.
 
 ### Tests for User Story 5
 
-- [ ] T010 [P] [US5] Add unit test for automatic completion logic in `backend/src/services/roomStore.test.ts`
-- [ ] T011 [US5] Add integration test for automatic completion via guess endpoint in `backend/src/api/rooms.test.ts`
+- [ ] T011 [P] [US5] Add unit test for automatic completion logic and "no-end-on-churn" rule in `backend/src/services/roomStore.test.ts`
+- [ ] T012 [US5] Add integration test for automatic completion via guess endpoint in `backend/src/api/rooms.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T012 [US5] Implement automatic completion check in `POST /:code/guess` handler in `backend/src/api/rooms.ts`
+- [ ] T013 [US5] Implement automatic completion check in `POST /:code/guess` handler in `backend/src/api/rooms.ts` using the "Active Guessers" definition
 
 ---
 
 ## Phase 4: User Story 1 - Round Results Visibility (Priority: P1)
 
-**Goal**: All players see the correct word, final scores, and full guess history when the round ends.
+**Goal**: All players see the correct word, final scores, and full guess history when the round ends via a modal.
 
-**Independent Test**: End a round and verify the `RoundEndedModal` appears with all required content.
+**Independent Test**: End a round and verify the `RoundEndedModal` appears with all required content and 200px height constraints.
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] Add unit tests for `RoundEndedModal` rendering in `frontend/src/components/RoundEndedModal.test.tsx`
-- [ ] T014 [US1] Add integration test for modal visibility in `frontend/src/pages/GamePage.test.tsx`
+- [ ] T014 [P] [US1] Add unit tests for `RoundEndedModal` rendering in `frontend/src/components/RoundEndedModal.test.tsx`
+- [ ] T015 [US1] Add integration test for modal visibility in `frontend/src/pages/GamePage.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T015 [P] [US1] Create `frontend/src/components/RoundEndedModal.tsx` with vertical stack layout (Title, Word, Scores, History, Footer)
-- [ ] T016 [US1] Integrate `RoundEndedModal` into `frontend/src/pages/GamePage.tsx` based on `room.status === 'ended'`
-- [ ] T017 [P] [US1] Apply `panel` and `card` styling to the modal in `frontend/src/styles/app.css`
+- [ ] T016 [P] [US1] Create `frontend/src/components/RoundEndedModal.tsx` with vertical stack layout (Title, Word, Scores, History, Footer)
+- [ ] T017 [US1] Integrate `RoundEndedModal` into `frontend/src/pages/GamePage.tsx` based on `room.status === 'ended'`
+- [ ] T018 [P] [US1] Apply `panel`, `card`, and 200px max-height styling to the modal in `frontend/src/styles/app.css`
 
 ---
 
 ## Phase 5: User Story 4 - Manual Round Termination (Priority: P2)
 
-**Goal**: The host can manually end a round at any time.
+**Goal**: The host can manually end a round at any time via a button beside "Exit Game".
 
-**Independent Test**: Host clicks "End Round" and verify round transitions to results.
+**Independent Test**: Host clicks "End Round" and verify round transitions to results; verify non-hosts don't see the button.
 
 ### Tests for User Story 4
 
-- [ ] T018 [P] [US4] Add unit test for `endGame` host check in `backend/src/services/roomStore.test.ts`
-- [ ] T019 [US4] Add integration test for manual end round endpoint in `backend/src/api/rooms.test.ts`
+- [ ] T019 [P] [US4] Add unit test for `endGame` host check in `backend/src/services/roomStore.test.ts`
+- [ ] T020 [US4] Add integration test for manual end round endpoint in `backend/src/api/rooms.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T020 [US4] Render "End Round" button beside "Exit Game" in `frontend/src/pages/GamePage.tsx` (Host only)
-- [ ] T021 [US4] Add `handleEndRound` action to `frontend/src/pages/GamePage.tsx` calling `roomStore.endGame()`
+- [ ] T021 [US4] Render "End Round" button inside the `.button-row` beside "Exit Game" in `frontend/src/pages/GamePage.tsx` (Host only, `button--secondary` style)
+- [ ] T022 [US4] Implement `handleEndRound` action in `frontend/src/pages/GamePage.tsx` with toast error handling
 
 ---
 
 ## Phase 6: User Story 2 & 3 - Host Game Restart & Role-Based Actions (Priority: P1/P2)
 
-**Goal**: Host can transition the room back to the lobby state; only host sees the "Restart" button.
+**Goal**: Host can transition the room back to the lobby; system auto-navigates all players to `/lobby`.
 
-**Independent Test**: Host clicks "Restart Game" on results screen and verify everyone returns to lobby with cleared state.
+**Independent Test**: Host clicks "Restart Game" on results screen and verify everyone is redirected to lobby with 0 scores (Verify SC-003: < 1s perception).
 
 ### Tests for User Stories 2 & 3
 
-- [ ] T022 [P] [US2] Add unit test for state clearing in `backend/src/services/roomStore.test.ts`
-- [ ] T023 [US2] Add integration test for restart endpoint in `backend/src/api/rooms.test.ts` (Verify SC-003: < 1s latency)
+- [ ] T023 [P] [US2] Add unit test for state clearing and scoreboard reset in `backend/src/services/roomStore.test.ts`
+- [ ] T024 [US2] Add integration test for restart endpoint in `backend/src/api/rooms.test.ts` (Verify latency < 1s)
 
 ### Implementation for User Stories 2 & 3
 
-- [ ] T024 [US2] Add "Restart Game" button to `RoundEndedModal.tsx` footer (Host only)
-- [ ] T025 [US2] Add "Waiting for host..." message to `RoundEndedModal.tsx` footer (Non-hosts)
-- [ ] T026 [US2] Implement `handleRestart` in `RoundEndedModal.tsx` calling `roomStore.restartGame()`
+- [ ] T025 [US2] Add "Restart Game" button to `RoundEndedModal.tsx` footer (Host only)
+- [ ] T026 [US2] Add "Waiting for host to restart..." message to `RoundEndedModal.tsx` footer (Non-hosts)
+- [ ] T027 [US2] Implement `handleRestart` in `RoundEndedModal.tsx` with toast error handling
+- [ ] T028 [US2] Implement automatic navigation to `/lobby` in `frontend/src/pages/GamePage.tsx` when room status transitions to 'lobby'
 
 ---
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-**Purpose**: Improvements that affect multiple user stories
+**Purpose**: Final verification and styling consistency
 
-- [ ] T027 [P] Verify 90% code coverage for new logic in `backend/` and `frontend/`
-- [ ] T028 [P] Ensure all new UI follows existing `app.css` conventions
-- [ ] T029 Run `quickstart.md` validation loop
+- [ ] T029 [P] Verify 90% code coverage for new logic in `backend/` and `frontend/`
+- [ ] T030 [P] Ensure all new UI strictly matches `panel` and `card` styles in `frontend/src/styles/app.css`
+- [ ] T031 Run `quickstart.md` validation loop including churn edge cases
 
 ---
 
@@ -134,31 +136,39 @@
 
 - **Setup & Foundational (Phases 1-2)**: MUST be completed first.
 - **User Stories (Phases 3-6)**: 
-  - US5 (Automatic Completion) is a good starting point for backend logic.
-  - US1 (Visibility) is the primary UI task.
-  - US4 (Manual End) and US2/3 (Restart) build on the 'ended' state.
+  - US5 (Automatic Completion) is the backend MVP.
+  - US1 (Visibility) is the frontend MVP.
+  - US4 and US2/3 build on the 'ended' state.
 - **Polish (Final Phase)**: After all stories are verified.
+
+### User Story Dependencies
+
+- **US5 (P1)**: Foundation -> Backend Logic.
+- **US1 (P1)**: Foundation -> Frontend Modal.
+- **US4 (P2)**: US1 -> Host End Control.
+- **US2/3 (P1/P2)**: US1 -> Host Restart Control + Auto-Navigation.
 
 ### Parallel Opportunities
 
-- Backend changes in Phase 2 (T003-T007) can be done in parallel with Frontend boilerplate (T008-T009).
-- Once Phase 2 is done, US5 (Backend) and US1 (Frontend) can start in parallel.
-- All tasks marked [P] have no file conflicts or strict sequential dependencies.
+- Backend (T003-T007) and Frontend (T008-T010) foundational work.
+- US5 (Backend) and US1 (Frontend) implementation.
+- All unit tests marked [P] across different stories.
 
 ---
 
 ## Implementation Strategy
 
-### MVP First (Automatic Completion & Results Visibility)
+### MVP First (Automatic End & Results visibility)
 
 1. Complete Foundation.
-2. Implement US5 (Automatic End) + US1 (Results Modal).
-3. **STOP and VALIDATE**: Play a game, guess everything, see the modal with correct word and scores.
+2. Implement US5 (Backend auto-end).
+3. Implement US1 (Frontend results modal).
+4. **STOP and VALIDATE**: Final guess triggers modal showing correct word and scores.
 
 ### Incremental Delivery
 
 1. Add US4 (Manual End) -> Test host control.
-2. Add US2/3 (Restart) -> Test full game loop (Play -> End -> Lobby -> Play again).
+2. Add US2/3 (Restart) -> Test full game loop and auto-navigation.
 
 ---
 

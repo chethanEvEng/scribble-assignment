@@ -3,7 +3,10 @@
 **Branch**: `004-game-end-restart` | **Date**: 2026-06-03 | **Spec**: [.specify/specs/004-game-end-restart/spec.md](spec.md)
 
 ## Summary
-The goal is to implement round termination logic (manual by host and automatic when everyone guesses correctly) and a game restart flow that returns participants to the lobby while clearing round-specific state. This involves updating the backend state management, exposing new API endpoints for host actions, and enhancing the frontend `GamePage` with a **host "End Round" control** and a **focused results modal** for all participants.
+The goal is to implement round termination logic (manual by host and automatic when all active guessers succeed) and a game restart flow. Key technical highlights include:
+1. **Backend**: Host-only endpoints for `/end` and `/restart`, automatic completion logic in the guess handler, and robust "First to Server" transition guards.
+2. **Frontend UI**: A new `RoundEndedModal` following a strict vertical layout with max-height constraints (200px) and a host "End Round" button integrated into the existing `button-row`.
+3. **UX Flow**: Non-blocking toast errors for host actions and automatic client-side navigation back to `/lobby` upon detection of a successful restart.
 
 ## Technical Context
 **Language/Version**: TypeScript 5.x, Node.js 18+
@@ -14,13 +17,11 @@ The goal is to implement round termination logic (manual by host and automatic w
 
 **Testing**: Vitest (Unit and Integration)
 
-**Target Platform**: Modern Web Browsers
+**Target Platform**: **Desktop Web ONLY** (Mobile/Tablet out of scope)
 
-**Project Type**: Web Application
+**Performance Goals**: Restart perception < 1s; Navigation triggered via 2s polling interval
 
-**Performance Goals**: Restart to lobby < 1s; UI updates via polling (2s frequency)
-
-**Constraints**: Principle II (HTTP Polling), Principle VI (90% Coverage)
+**Constraints**: Principle II (HTTP Polling), Principle VI (90% Coverage). Accessibility is explicitly out of scope.
 
 ## Constitution Check
 
@@ -41,9 +42,9 @@ Ensure compliance with [Scribble Assignment Constitution](.specify/memory/consti
 ```text
 .specify/specs/004-game-end-restart/
 ├── plan.md              # This file
-├── research.md          # Modal decisions and UI placement
-├── data-model.md        # State transition triggers
-├── quickstart.md        # Detailed implementation guide
+├── research.md          # Modal decisions, UI placement, and Device Scope
+├── data-model.md        # State transition triggers and Terminology
+├── quickstart.md        # Step-by-step implementation guide
 ├── contracts/           
 │   └── api.md           # /end and /restart endpoints
 └── tasks.md             # Implementation tasks
@@ -54,20 +55,20 @@ Ensure compliance with [Scribble Assignment Constitution](.specify/memory/consti
 ```text
 backend/
 ├── src/
-│   ├── services/        # roomStore.ts
-│   └── api/             # rooms.ts
+│   ├── services/        # roomStore.ts (End/Restart logic)
+│   └── api/             # rooms.ts (Endpoints + Guess trigger)
 └── tests/
 
 frontend/
 ├── src/
 │   ├── components/      # RoundEndedModal.tsx
-│   ├── pages/           # GamePage.tsx
-│   ├── services/        # api.ts
-│   └── state/           # roomStore.ts
+│   ├── pages/           # GamePage.tsx (End button + Navigation)
+│   ├── services/        # api.ts (Endpoints)
+│   └── state/           # roomStore.ts (Actions)
 └── tests/
 ```
 
-**Structure Decision**: Standard full-stack web structure as detected.
+**Structure Decision**: Standard full-stack web structure.
 
 ## Complexity Tracking
 

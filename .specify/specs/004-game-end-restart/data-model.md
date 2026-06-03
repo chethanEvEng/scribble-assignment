@@ -6,7 +6,7 @@
 - **Status Transitions**:
   - `in-game` → `ended`: 
     - **Trigger (Manual)**: Host calls `/api/rooms/:code/end`.
-    - **Trigger (Automatic)**: Every guesser has a correct guess in `guessHistory`.
+    - **Trigger (Automatic)**: Every active guesser has a correct guess in `guessHistory`.
   - `ended` → `lobby`:
     - **Trigger (Manual)**: Host calls `/api/rooms/:code/restart`.
 
@@ -23,3 +23,7 @@ When transitioning from `ended` to `lobby`:
 
 ## Terminology
 - **Active Guessers**: Defined as all participants in the room whose ID does not match the current `drawerId`.
+
+## Edge Case Logic
+- **Concurrency**: First request to update status on server wins.
+- **Churn**: Player removal does not auto-end the round. Automatic checks occur only on `POST /guess`.

@@ -89,6 +89,8 @@ The system automatically ends the round once all guessers have identified the se
 
 - What happens if a player leaves the room while the results screen is displayed? (Assumption: Participant list is updated as usual).
 - What happens if the host leaves during the results screen? (Assumption: Existing logic handles room closure or host migration).
+- **Conflict Resolution**: In the event of concurrent actions (e.g., host clicks "End Round" while a guess is processing), a "First to Server" strategy applies. The first request to successfully update the room status to 'ended' wins; subsequent requests will be handled as 400 Bad Request (invalid state transition) and ignored by the UI.
+- **Player Churn**: If a player leaves during an active round, they are removed from the room, but the automatic round completion trigger (all guessers correct) is NOT recalculated until a new guess is submitted. If a round becomes "stuck" due to churn, the host MUST use the "End Round" action.
 
 ## Requirements *(mandatory)*
 
@@ -106,7 +108,16 @@ The system automatically ends the round once all guessers have identified the se
 - **FR-008**: System MUST clear the following state upon restart: `currentWord`, `canvasData`, `guessHistory`, and `drawerId`.
 - **FR-009**: System MUST reset all player scores in the scoreboard immediately upon transitioning back to the 'lobby' status.
 - **FR-010**: System MUST provide an "End Round" action available ONLY to the host while a round is active. This button MUST be rendered beside the "Exit Game" button and styled consistently with it.
-- **FR-011**: The "Round Ended" summary component MUST be a modal and MUST display: the revealed secret word, the final scoreboard, the complete guess history, and the "Restart Game" button (for the host only).
+- **FR-011**: The "Round Ended" summary component MUST be a modal following a vertical stack layout:
+  - **Header**: "Round Ended" title using `section-kicker` style.
+  - **Revealed Word**: The secret word displayed prominently (reusing the existing `secret-word` CSS class).
+  - **Final Scores**: A list showing the final scores of all participants (max-height: 200px, scrollable).
+  - **Guess History**: A scrollable section showing all guesses made during the round (max-height: 200px, scrollable).
+  - **Footer**: A "Restart Game" button (Host only) or a "Waiting for host to restart..." message (non-hosts).
+  - **Styling**: MUST use existing `panel`, `card`, and `button` CSS variables and classes for visual consistency.
+
+- **FR-012**: System MUST automatically navigate all participants from the `GamePage` back to the lobby page (`/lobby`) immediately upon detecting the room status has transitioned back to 'lobby'.
+- **FR-013**: System MUST display a non-blocking toast error notification exclusively to the host if the "End Round" or "Restart Game" API calls fail.
 
 ### Key Entities
 
@@ -119,7 +130,7 @@ The system automatically ends the round once all guessers have identified the se
 
 - **SC-001**: 100% of participants can see the secret word once the round status is 'ended'.
 - **SC-002**: The "Restart Game" button is visible exclusively to the host when the round is 'ended'.
-- **SC-003**: Returning to the lobby via "Restart Game" takes less than 1 second.
+- **SC-003**: Returning to the lobby via "Restart Game" takes less than 1s for the host (API round-trip latency); non-host perception is bounded by the 2s polling interval.
 - **SC-004**: All participants from the previous round are present in the lobby after restart.
 - **SC-005**: Canvas and guess history are confirmed empty immediately after transitioning back to 'lobby'.
 
@@ -131,16 +142,21 @@ The system automatically ends the round once all guessers have identified the se
 - Q: Is the "Round Ended" summary component a modal or overlay? → A: Modal.
 - Q: Where is the "End Round" button rendered? → A: Beside the "Exit Game" button with similar styling.
 - Q: What is the layout and styling of the "Round Ended" modal? → A: Vertical stack (Title, Word, Scores, History, Footer) using existing app styles.
+- Q: How should API failures for /end and /restart be handled? → A: Show toast error to host only.
+- Q: How are concurrent "end" actions resolved? → A: Latest request wins (First to server).
+- Q: How does player churn affect automatic round end? → A: Round only ends manually or if remaining guess.
+- Q: What are the accessibility requirements for the modal? → A: Accessibility is out of scope.
+- Q: What are the mobile/tablet requirements? → A: Desktop web only; others are out of scope.
+- Q: What are the height constraints for modal sections? → A: Max-height 200px per section.
+- Q: How should the revealed secret word be styled? → A: Reuse existing `secret-word` CSS class.
+- Q: What happens if a player joins at the transition to 'ended'? → A: Impossible; joining is prevented once round starts.
+- Q: What is the styling for the "End Round" button? → A: Reuse `button--secondary` CSS class.
+- Q: What is the behavior for players who join after a round has ended? → A: Join directly into Results Modal.
+- Q: Is the polling frequency sufficient for < 1s restart perception? → A: Perception bounded by polling. Acceptable.
 
 ## Assumptions
 
 - The trigger for "round has ended" includes all players guessing correctly or host manual action.
 - The "host" is correctly identified by the `hostId` property in the Room model.
 - Scoreboard persistence in the lobby is desired for bragging rights until the next game starts.
-bby is desired for bragging rights until the next game starts.
- the lobby is desired for bragging rights until the next game starts.
-bby is desired for bragging rights until the next game starts.
-oard persistence in the lobby is desired for bragging rights until the next game starts.
-bby is desired for bragging rights until the next game starts.
- the lobby is desired for bragging rights until the next game starts.
-bby is desired for bragging rights until the next game starts.
+- **Performance**: SC-003 (< 1s latency) applies to host perception; non-host perception is bounded by the 2s polling interval.
