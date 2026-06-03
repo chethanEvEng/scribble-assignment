@@ -20,3 +20,6 @@ When transitioning from `ended` to `lobby`:
 - `scoreboard`: All player scores reset to `0` immediately.
 - `participants`: **PRESERVED**.
 - `hostId`: **PRESERVED**.
+
+## Terminology
+- **Active Guessers**: Defined as all participants in the room whose ID does not match the current `drawerId`.
