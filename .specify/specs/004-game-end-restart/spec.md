@@ -136,8 +136,9 @@ The system automatically ends the round once all guessers have identified the se
 
 ## Clarifications
 
-### Session 2026-06-03
-- Q: How does a round end? → A: All players guess correctly OR host manually ends.
+### Session 2026-06-04
+- Q: Does the Guess History show who made the guess? → A: Yes, it now displays the player name alongside the guessed word.
+- Q: Where is the "End Round" and "Restart Game" buttons are rendered? → A: "End Round" in `GamePage.tsx` button row; "Restart Game" in `RoundEndedModal.tsx` footer. (Implementation: Always use `room.isHost` for host verification).
 - Q: What does the "Round Ended" summary component show? → A: Revealed word, final scores, guess history, and action buttons.
 - Q: Is the "Round Ended" summary component a modal or overlay? → A: Modal.
 - Q: Where is the "End Round" button rendered? → A: Beside the "Exit Game" button with similar styling.

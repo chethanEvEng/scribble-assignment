@@ -70,6 +70,8 @@ frontend/
 
 **Structure Decision**: Standard full-stack web structure.
 
-## Complexity Tracking
+## Host Verification Strategy
 
-*No violations.*
+To ensure authorized access to host-only actions (End Round, Restart Game):
+- Always utilize the `isHost` boolean property provided by the `RoomSnapshot` object fetched from the backend (`room.isHost`).
+- Do NOT derive host status from participant list data (`participantId === hostId` logic inside the UI), as `isHost` is the authoritative flag provided by the API for the current viewer.

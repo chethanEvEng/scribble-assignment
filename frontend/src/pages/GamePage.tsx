@@ -118,7 +118,7 @@ export function GamePage() {
         <button className="button button--secondary" onClick={() => navigate("/lobby")}>
           Exit Game
         </button>
-        {viewer?.isHost && room.status === 'in-game' && (
+        {room.isHost && room.status === 'in-game' && (
           <button className="button button--secondary" onClick={async () => { await store.endGame(); store.fetchRoom(); }}>
             End Round
           </button>

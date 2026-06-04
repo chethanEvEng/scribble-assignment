@@ -32,14 +32,19 @@ export function RoundEndedModal({ room }: RoundEndedModalProps) {
 
       <h3>Guess History</h3>
       <div className="scrollable">
-        {room.guessHistory.map((guess, index) => (
-          <p key={index}>{guess.text}</p>
-        ))}
+        {room.guessHistory.map((guess, index) => {
+          const participant = room.participants.find(p => p.id === guess.playerId);
+          return (
+            <p key={index}>
+              <strong>{participant?.name ?? "Unknown"}:</strong> {guess.text}
+            </p>
+          );
+        })}
       </div>
 
       <div className="footer">
         {isHost ? (
-          <button onClick={handleRestart} className="button--secondary">Restart Game</button>
+          <button onClick={handleRestart} className="button button--secondary">Restart Game</button>
         ) : (
           <p>Waiting for host to restart...</p>
         )}
