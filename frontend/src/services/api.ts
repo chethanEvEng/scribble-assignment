@@ -8,6 +8,13 @@ export interface Participant {
   isDrawer: boolean;
 }
 
+export interface Guess {
+  playerId: string;
+  text: string;
+  isCorrect: boolean;
+  timestamp: string;
+}
+
 export interface RoomSnapshot {
   code: string;
   status: RoomStatus;
@@ -16,8 +23,8 @@ export interface RoomSnapshot {
   participants: Participant[];
   currentWord: string | null;
   canvasData: any;
-  guessHistory: any[];
-  scoreboard: any;
+  guessHistory: Guess[];
+  scoreboard: Record<string, number>;
 }
 
 export interface RoomSessionResponse {

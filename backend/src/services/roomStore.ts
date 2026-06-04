@@ -56,6 +56,11 @@ export function createRoom(playerName?: string) {
     status: "lobby",
     hostId: participant.id,
     participants: [participant],
+    drawerId: null,
+    currentWord: null,
+    canvasData: null,
+    guessHistory: [],
+    scoreboard: {},
     createdAt: now(),
     updatedAt: now()
   };

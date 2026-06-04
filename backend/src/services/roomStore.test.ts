@@ -65,6 +65,7 @@ describe("roomStore", () => {
     const hostId = result.participantId;
 
     const room = startGame(code, hostId);
+    if (!room) throw new Error("Room not found");
 
     expect(room.status).toBe("in-game");
     expect(room.drawerId).toBe(hostId);
@@ -89,6 +90,7 @@ describe("roomStore", () => {
     const room = getRoom(code)!;
 
     const roomAfterStart = startGame(code, result.participantId);
+    if (!roomAfterStart) throw new Error("Room not found");
 
     // Initial state: in-game
     expect(roomAfterStart.status).toBe("in-game");
