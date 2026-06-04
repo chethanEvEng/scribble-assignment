@@ -24,8 +24,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Verify project structure and branch `004-game-end-restart`
-- [ ] T002 Update `GEMINI.md` to point to the current implementation plan (already completed)
+- [X] T001 Verify project structure and branch `004-game-end-restart`
+- [X] T002 Update `GEMINI.md` to point to the current implementation plan (already completed)
 
 ---
 
@@ -33,14 +33,14 @@
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [ ] T003 [P] Add `RoomStatus` 'ended' and reveal logic in `backend/src/models/game.ts`
-- [ ] T004 [P] Update `toRoomSnapshot` in `backend/src/services/roomStore.ts` to reveal `currentWord` when status is 'ended'
-- [ ] T005 [P] Implement `endGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks if participant is host, sets status)
-- [ ] T006 [P] Implement `restartGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks host, clears state per data-model.md, resets scoreboard)
-- [ ] T007 Add `end` and `restart` endpoints to `backend/src/api/rooms.ts` with 400 guards for invalid state transitions
-- [ ] T008 [P] Add `endGame` and `restartGame` methods to `frontend/src/services/api.ts`
-- [ ] T009 [P] Expose `endGame` and `restartGame` in `frontend/src/state/roomStore.ts`
-- [ ] T010 [P] Add toast notification logic for host action failures in `frontend/src/state/roomStore.ts`
+- [X] T003 [P] Add `RoomStatus` 'ended' and reveal logic in `backend/src/models/game.ts`
+- [X] T004 [P] Update `toRoomSnapshot` in `backend/src/services/roomStore.ts` to reveal `currentWord` when status is 'ended'
+- [X] T005 [P] Implement `endGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks if participant is host, sets status)
+- [X] T006 [P] Implement `restartGame(code, participantId)` logic in `backend/src/services/roomStore.ts` (checks host, clears state per data-model.md, resets scoreboard)
+- [X] T007 Add `end` and `restart` endpoints to `backend/src/api/rooms.ts` with 400 guards for invalid state transitions
+- [X] T008 [P] Add `endGame` and `restartGame` methods to `frontend/src/services/api.ts`
+- [X] T009 [P] Expose `endGame` and `restartGame` in `frontend/src/state/roomStore.ts`
+- [X] T010 [P] Add toast notification logic for host action failures in `frontend/src/state/roomStore.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -54,12 +54,12 @@
 
 ### Tests for User Story 5
 
-- [ ] T011 [P] [US5] Add unit test for automatic completion logic and "no-end-on-churn" rule in `backend/src/services/roomStore.test.ts`
-- [ ] T012 [US5] Add integration test for automatic completion via guess endpoint in `backend/src/api/rooms.test.ts`
+- [X] T011 [P] [US5] Add unit test for automatic completion logic and "no-end-on-churn" rule in `backend/src/services/roomStore.test.ts`
+- [X] T012 [US5] Add integration test for automatic completion via guess endpoint in `backend/src/api/rooms.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T013 [US5] Implement automatic completion check in `POST /:code/guess` handler in `backend/src/api/rooms.ts` using the "Active Guessers" definition
+- [X] T013 [US5] Implement automatic completion check in `POST /:code/guess` handler in `backend/src/api/rooms.ts` using the "Active Guessers" definition
 
 ---
 
@@ -71,14 +71,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T014 [P] [US1] Add unit tests for `RoundEndedModal` rendering in `frontend/src/components/RoundEndedModal.test.tsx`
-- [ ] T015 [US1] Add integration test for modal visibility in `frontend/src/pages/GamePage.test.tsx`
+- [X] T014 [P] [US1] Add unit tests for `RoundEndedModal` rendering in `frontend/src/components/RoundEndedModal.test.tsx`
+- [X] T015 [US1] Add integration test for modal visibility in `frontend/src/pages/GamePage.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Create `frontend/src/components/RoundEndedModal.tsx` with vertical stack layout (Title, Word, Scores, History, Footer)
-- [ ] T017 [US1] Integrate `RoundEndedModal` into `frontend/src/pages/GamePage.tsx` based on `room.status === 'ended'`
-- [ ] T018 [P] [US1] Apply `panel`, `card`, and 200px max-height styling to the modal in `frontend/src/styles/app.css`
+- [X] T016 [P] [US1] Create `frontend/src/components/RoundEndedModal.tsx` with vertical stack layout (Title, Word, Scores, History, Footer)
+- [X] T017 [US1] Integrate `RoundEndedModal` into `frontend/src/pages/GamePage.tsx` based on `room.status === 'ended'`
+- [X] T018 [P] [US1] Apply `panel`, `card`, and 200px max-height styling to the modal in `frontend/src/styles/app.css`
 
 ---
 
@@ -90,13 +90,13 @@
 
 ### Tests for User Story 4
 
-- [ ] T019 [P] [US4] Add unit test for `endGame` host check in `backend/src/services/roomStore.test.ts`
-- [ ] T020 [US4] Add integration test for manual end round endpoint in `backend/src/api/rooms.test.ts`
+- [X] T019 [P] [US4] Add unit test for `endGame` host check in `backend/src/services/roomStore.test.ts`
+- [X] T020 [US4] Add integration test for manual end round endpoint in `backend/src/api/rooms.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T021 [US4] Render "End Round" button inside the `.button-row` beside "Exit Game" in `frontend/src/pages/GamePage.tsx` (Host only, `button--secondary` style)
-- [ ] T022 [US4] Implement `handleEndRound` action in `frontend/src/pages/GamePage.tsx` with toast error handling
+- [X] T021 [US4] Render "End Round" button inside the `.button-row` beside "Exit Game" in `frontend/src/pages/GamePage.tsx` (Host only, `button--secondary` style)
+- [X] T022 [US4] Implement `handleEndRound` action in `frontend/src/pages/GamePage.tsx` with toast error handling
 
 ---
 
@@ -108,15 +108,15 @@
 
 ### Tests for User Stories 2 & 3
 
-- [ ] T023 [P] [US2] Add unit test for state clearing and scoreboard reset in `backend/src/services/roomStore.test.ts`
-- [ ] T024 [US2] Add integration test for restart endpoint in `backend/src/api/rooms.test.ts` (Verify latency < 1s)
+- [X] T023 [P] [US2] Add unit test for state clearing and scoreboard reset in `backend/src/services/roomStore.test.ts`
+- [X] T024 [US2] Add integration test for restart endpoint in `backend/src/api/rooms.test.ts` (Verify latency < 1s)
 
 ### Implementation for User Stories 2 & 3
 
-- [ ] T025 [US2] Add "Restart Game" button to `RoundEndedModal.tsx` footer (Host only)
-- [ ] T026 [US2] Add "Waiting for host to restart..." message to `RoundEndedModal.tsx` footer (Non-hosts)
-- [ ] T027 [US2] Implement `handleRestart` in `RoundEndedModal.tsx` with toast error handling
-- [ ] T028 [US2] Implement automatic navigation to `/lobby` in `frontend/src/pages/GamePage.tsx` when room status transitions to 'lobby'
+- [X] T025 [US2] Add "Restart Game" button to `RoundEndedModal.tsx` footer (Host only)
+- [X] T026 [US2] Add "Waiting for host to restart..." message to `RoundEndedModal.tsx` footer (Non-hosts)
+- [X] T027 [US2] Implement `handleRestart` in `RoundEndedModal.tsx` with toast error handling
+- [X] T028 [US2] Implement automatic navigation to `/lobby` in `frontend/src/pages/GamePage.tsx` when room status transitions to 'lobby'
 
 ---
 
@@ -124,9 +124,9 @@
 
 **Purpose**: Final verification and styling consistency
 
-- [ ] T029 [P] Verify 90% code coverage for new logic in `backend/` and `frontend/`
-- [ ] T030 [P] Ensure all new UI strictly matches `panel` and `card` styles in `frontend/src/styles/app.css`
-- [ ] T031 Run `quickstart.md` validation loop including churn edge cases
+- [X] T029 [P] Verify 90% code coverage for new logic in `backend/` and `frontend/`
+- [X] T030 [P] Ensure all new UI strictly matches `panel` and `card` styles in `frontend/src/styles/app.css`
+- [X] T031 Run `quickstart.md` validation loop including churn edge cases
 
 ---
 

@@ -1,5 +1,5 @@
 export type ParticipantRole = "drawer" | "guesser";
-export type RoomStatus = "lobby" | "in-game";
+export type RoomStatus = "lobby" | "in-game" | "ended";
 
 export interface Participant {
   id: string;
@@ -71,6 +71,22 @@ export const api = {
   },
   startGame(code: string, participantId: string) {
     return request<{ success: boolean }>(`/rooms/${encodeURIComponent(code)}/start`, {
+      method: "POST",
+      headers: {
+        "x-participant-id": participantId
+      }
+    });
+  },
+  endGame(code: string, participantId: string) {
+    return request<{ success: boolean }>(`/rooms/${encodeURIComponent(code)}/end`, {
+      method: "POST",
+      headers: {
+        "x-participant-id": participantId
+      }
+    });
+  },
+  restartGame(code: string, participantId: string) {
+    return request<{ success: boolean }>(`/rooms/${encodeURIComponent(code)}/restart`, {
       method: "POST",
       headers: {
         "x-participant-id": participantId

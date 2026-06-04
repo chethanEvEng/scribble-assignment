@@ -8,7 +8,7 @@ import {
   submitGuessSchema,
   updateCanvasSchema
 } from "./schemas.js";
-import { createRoom, getRoom, joinRoom, leaveRoom, saveRoom, startGame, toRoomSnapshot } from "../services/roomStore.js";
+import { checkAutomaticCompletion, createRoom, endGame, getRoom, joinRoom, leaveRoom, restartGame, saveRoom, startGame, toRoomSnapshot } from "../services/roomStore.js";
 
 export function createRoomsRouter() {
   const router = Router();
@@ -77,6 +77,32 @@ export function createRoomsRouter() {
     }
   });
 
+  router.post("/:code/end", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const participantId = request.headers["x-participant-id"] as string;
+
+      endGame(code.toUpperCase(), participantId);
+
+      response.json({ success: true });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/restart", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const participantId = request.headers["x-participant-id"] as string;
+
+      restartGame(code.toUpperCase(), participantId);
+
+      response.json({ success: true });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   router.post("/:code/guess", (request, response, next) => {
     try {
       const { code } = roomCodeParamsSchema.parse(request.params);
@@ -101,6 +127,7 @@ export function createRoomsRouter() {
       }
 
       saveRoom(room);
+      checkAutomaticCompletion(room);
 
       response.json({ success: true, isCorrect, pointsAwarded: isCorrect ? 100 : 0 });
     } catch (error) {

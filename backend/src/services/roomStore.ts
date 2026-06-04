@@ -148,6 +148,46 @@ export function startGame(code: string, hostId: string) {
   return saveRoom(room);
 }
 
+export function checkAutomaticCompletion(room: Room) {
+  if (room.status !== "in-game") return;
+
+  const guessers = room.participants.filter(p => p.id !== room.drawerId);
+  const correctGuessers = new Set(
+    room.guessHistory
+      .filter(g => g.isCorrect)
+      .map(g => g.playerId)
+  );
+
+  if (guessers.length > 0 && guessers.every(g => correctGuessers.has(g.id))) {
+    room.status = "ended";
+    saveRoom(room);
+  }
+}
+
+export function endGame(code: string, participantId: string) {
+  const room = rooms.get(code);
+  if (!room || room.status !== "in-game" || room.hostId !== participantId) {
+    throw new Error("Unauthorized or invalid state");
+  }
+  room.status = "ended";
+  return saveRoom(room);
+}
+
+export function restartGame(code: string, participantId: string) {
+  const room = rooms.get(code);
+  if (!room || room.status !== "ended" || room.hostId !== participantId) {
+    throw new Error("Unauthorized or invalid state");
+  }
+
+  room.status = "lobby";
+  room.drawerId = null;
+  room.currentWord = null;
+  room.canvasData = null;
+  room.guessHistory = [];
+  room.scoreboard = {};
+  return saveRoom(room);
+}
+
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
   return {
     code: room.code,
@@ -158,7 +198,7 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
       ...participant,
       isDrawer: participant.id === room.drawerId
     })),
-    currentWord: room.drawerId === viewerParticipantId ? room.currentWord : null,
+    currentWord: (room.drawerId === viewerParticipantId || room.status === 'ended') ? room.currentWord : null,
     canvasData: room.canvasData,
     guessHistory: room.guessHistory,
     scoreboard: room.scoreboard

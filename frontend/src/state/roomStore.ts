@@ -59,7 +59,7 @@ export class RoomStore {
     this.listeners.forEach((listener) => listener());
   }
 
-  private async withLoading<T>(operation: () => Promise<T>) {
+  private async withLoading<T>(operation: () => Promise<T>, errorMessage?: string) {
     this.setState({
       isLoading: true,
       error: null
@@ -68,8 +68,10 @@ export class RoomStore {
     try {
       return await operation();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unexpected request failure";
+      const message = errorMessage ?? (error instanceof Error ? error.message : "Unexpected request failure");
       this.setState({ error: message });
+      // Here we would ideally trigger a toast, for now updating the state.error suffices
+      // The UI should display this error.
       throw error;
     } finally {
       this.setState({ isLoading: false });
@@ -132,7 +134,30 @@ export class RoomStore {
     }
 
     return await this.withLoading(() =>
-      api.startGame(this.state.room!.code, this.state.participantId!)
+      api.startGame(this.state.room!.code, this.state.participantId!),
+      "Failed to start game"
+    );
+  }
+
+  async endGame() {
+    if (!this.state.room || !this.state.participantId) {
+      return null;
+    }
+
+    return await this.withLoading(() =>
+      api.endGame(this.state.room!.code, this.state.participantId!),
+      "Failed to end round"
+    );
+  }
+
+  async restartGame() {
+    if (!this.state.room || !this.state.participantId) {
+      return null;
+    }
+
+    return await this.withLoading(() =>
+      api.restartGame(this.state.room!.code, this.state.participantId!),
+      "Failed to restart game"
     );
   }
 

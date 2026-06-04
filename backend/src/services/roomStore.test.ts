@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createRoom, joinRoom, leaveRoom, getRoom, startGame } from "./roomStore.js";
+import { createRoom, joinRoom, leaveRoom, getRoom, startGame, checkAutomaticCompletion } from "./roomStore.js";
 
 describe("roomStore", () => {
   it("createRoom returns a room with a 4-character uppercase code and assigns host", () => {
@@ -79,5 +79,28 @@ describe("roomStore", () => {
     const notHostId = playerResult.participantId;
 
     expect(() => startGame(code, notHostId)).toThrow("Cannot start game");
+  });
+
+  it("checkAutomaticCompletion should end game when all guessers have guessed correctly", () => {
+    const result = createRoom("Alice"); // Drawer
+    const code = result.room.code;
+    const g1 = joinRoom(code, "Bob")!.participantId;
+    const g2 = joinRoom(code, "Charlie")!.participantId;
+    const room = getRoom(code)!;
+
+    const roomAfterStart = startGame(code, result.participantId);
+
+    // Initial state: in-game
+    expect(roomAfterStart.status).toBe("in-game");
+
+    // Bob guesses correctly
+    roomAfterStart.guessHistory.push({ playerId: g1, text: "word", isCorrect: true, timestamp: new Date().toISOString() });
+    checkAutomaticCompletion(roomAfterStart);
+    expect(roomAfterStart.status).toBe("in-game");
+
+    // Charlie guesses correctly
+    roomAfterStart.guessHistory.push({ playerId: g2, text: "word", isCorrect: true, timestamp: new Date().toISOString() });
+    checkAutomaticCompletion(roomAfterStart);
+    expect(roomAfterStart.status).toBe("ended");
   });
 });
